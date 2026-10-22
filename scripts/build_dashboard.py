@@ -7,6 +7,33 @@ BRIEFS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file
 WEB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web")
 DOCS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs")
 
+def strip_emojis(text):
+    """Removes all emoji symbols and extra trailing punctuation."""
+    if not text:
+        return ""
+    # Standard emoji ranges
+    emoji_pattern = re.compile(
+        "["
+        "\U00010000-\U0010ffff"
+        "\U0001f300-\U0001f5ff"
+        "\U0001f600-\U0001f64f"
+        "\U0001f680-\U0001f6ff"
+        "\U0001f700-\U0001f77f"
+        "\U0001f780-\U0001f7ff"
+        "\U0001f800-\U0001f8ff"
+        "\U0001f900-\U0001f9ff"
+        "\U0001fa00-\U0001fa6f"
+        "\U0001fa70-\U0001faff"
+        "\u2600-\u26ff"
+        "\u2700-\u27bf"
+        "\ufe0f"
+        "]+", flags=re.UNICODE
+    )
+    cleaned = emoji_pattern.sub('', text)
+    # Clean up leading non-alphanumeric except Vietnamese characters / quotes
+    cleaned = re.sub(r'^[^\w\s"\'\[]+', '', cleaned).strip()
+    return cleaned
+
 def parse_markdown_brief(md_content):
     """Parses a structured Daily Intelligence Brief markdown file into JSON data."""
     data = {
@@ -22,31 +49,22 @@ def parse_markdown_brief(md_content):
     }
 
     # Extract Date
-    date_match = re.search(r"# 🌅 Daily Intelligence Briefing — ([^\n]+)", md_content)
+    date_match = re.search(r"#\s*(?:[^\w\s]*\s*)?Daily Intelligence Briefing\s*—\s*([^\n]+)", md_content)
     if date_match:
-        data["date"] = date_match.group(1).strip()
+        data["date"] = strip_emojis(date_match.group(1).strip())
 
     # Extract Global Posture
     posture_match = re.search(r"\*\*Global Posture\*\*:\s*\*([^*]+)\*(?:\s*—\s*([^\n]+))?", md_content)
     if posture_match:
         headline = posture_match.group(1).strip() if posture_match.group(1) else ""
         desc = posture_match.group(2).strip() if posture_match.group(2) else ""
-        data["global_posture"] = f"{headline} — {desc}" if desc else headline
+        data["global_posture"] = strip_emojis(f"{headline} — {desc}" if desc else headline)
 
-    # Extract Executive Radar
-    radar_block = re.search(r"## ⚡ Executive Radar \([^)]+\)([\s\S]*?)(?=## 🌐|\Z)", md_content)
-    if radar_block:
-        items = re.findall(r"\d+\.\s+\*\*\[([^\]]+)\]\s+([^*]+)\*\*\s+`\[Impact:\s*([0-9.]+)/10\]`(?:\s+`\[([^\]]+)\]`)?", radar_block.group(1))
-        for cat, title, score, tier in items:
-            data["executive_radar"].append({
-                "category": cat.strip(),
-                "title": title.strip(),
-                "score": float(score.strip()),
-                "tier": (tier or "").strip()
-            })
+    article_counter = 0
 
     # Helper to parse news blocks
     def extract_articles(section_text, section_key):
+        nonlocal article_counter
         article_blocks = re.split(r"(?=###\s+)", section_text)
         articles = []
         for block in article_blocks:
@@ -59,24 +77,26 @@ def parse_markdown_brief(md_content):
             
             # Facts extraction
             facts = []
-            facts_block = re.search(r"(?:\* \*\*(?:The Facts|Sự Kiện Cốt Lõi)[^*]*\*\*:\s*)([\s\S]*?)(?=\* \*\*(?:The \"So What\?\"|Phân Tích Hệ Quả|Chỉ Số|Key Metric)|\Z)", block)
+            facts_block = re.search(r"(?:\* \*\*(?:Core Facts|The Facts|Sự Kiện Cốt Lõi)[^*]*\*\*:\s*)([\s\S]*?)(?=\* \*\*(?:Strategic Implication|The \"So What\?\"|Phân Tích Hệ Quả|Chỉ Số|Key Metric)|\Z)", block)
             if facts_block:
-                facts = [f.strip("- *").strip() for f in facts_block.group(1).strip().split("\n") if f.strip().startswith("-")]
+                facts = [strip_emojis(f.strip("- *").strip()) for f in facts_block.group(1).strip().split("\n") if f.strip().startswith("-")]
 
             # So what extraction
-            so_what_match = re.search(r"(?:\* \*\*(?:The \"So What\?\"|Phân Tích Hệ Quả)[^*]*\*\*:\s*)([\s\S]*?)(?=\* \*\*(?:Chỉ Số|Key Metric)|\Z)", block)
-            so_what = so_what_match.group(1).strip() if so_what_match else ""
+            so_what_match = re.search(r"(?:\* \*\*(?:Strategic Implication|The \"So What\?\"|Phân Tích Hệ Quả)[^*]*\*\*:\s*)([\s\S]*?)(?=\* \*\*(?:Key Metric|Chỉ Số|Chỉ Số Quan Trọng)|\Z)", block)
+            so_what = strip_emojis(so_what_match.group(1).strip()) if so_what_match else ""
 
             # Metric extraction
-            metric_match = re.search(r"(?:\* \*\*(?:Key Metric|Chỉ Số Quan Trọng)\*\*:\s*)([^\n]+)", block)
-            metric = metric_match.group(1).strip() if metric_match else ""
+            metric_match = re.search(r"(?:\* \*\*(?:Key Metric|Chỉ Số Quan Trọng|Chỉ Số)\*\*:\s*)([^\n]+)", block)
+            metric = strip_emojis(metric_match.group(1).strip()) if metric_match else ""
 
             if title_match:
+                article_counter += 1
                 articles.append({
-                    "title": title_match.group(1).strip(),
+                    "id": f"art-{article_counter}",
+                    "title": strip_emojis(title_match.group(1).strip()),
                     "score": float(score_match.group(1)) if score_match else 7.0,
                     "score_breakdown": score_match.group(2) if score_match and score_match.group(2) else "",
-                    "sources": sources_match.group(1).strip() if sources_match else "",
+                    "sources": strip_emojis(sources_match.group(1).strip()) if sources_match else "",
                     "facts": facts,
                     "so_what": so_what,
                     "metric": metric,
@@ -85,28 +105,51 @@ def parse_markdown_brief(md_content):
         return articles
 
     # Global Section
-    global_block = re.search(r"## 🌐 1\. Global Macro & Geopolitics([\s\S]*?)(?=## 🇻🇳|\Z)", md_content)
+    global_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:1\.\s*)?Global Macro & Geopolitics([\s\S]*?)(?=##|\Z)", md_content)
     if global_block:
         data["sections"]["global"] = extract_articles(global_block.group(1), "global")
 
     # Vietnam Section
-    vn_block = re.search(r"## 🇻🇳 2\. Tiêu Điểm Việt Nam[^\n]*([\s\S]*?)(?=## 🔬|\Z)", md_content)
+    vn_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:2\.\s*)?(?:Vietnam Spotlight|Tiêu Điểm Việt Nam)[^\n]*([\s\S]*?)(?=##|\Z)", md_content)
     if vn_block:
         data["sections"]["vietnam"] = extract_articles(vn_block.group(1), "vietnam")
 
     # Science Section
-    sci_block = re.search(r"## 🔬 3\. Medicine, Psychology & Science([\s\S]*?)(?=## 📊|\Z)", md_content)
+    sci_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:3\.\s*)?Medicine, Psychology & Science([\s\S]*?)(?=##|\Z)", md_content)
     if sci_block:
         data["sections"]["science"] = extract_articles(sci_block.group(1), "science")
 
-    # Radar Skim
-    radar_block = re.search(r"## 📊 Quick-Scan Signals \([^)]+\)([\s\S]*?)$", md_content)
+    # Extract Executive Radar and match with article IDs
+    radar_block = re.search(r"##\s*(?:[^\w\s]*\s*)?Executive Radar \([^)]+\)([\s\S]*?)(?=##|\Z)", md_content)
     if radar_block:
-        skim_items = re.findall(r"\*\s+\*\*([^*]+)\*\*:\s+([^\n`]+)(?:`\[Impact:\s*([0-9.]+)/10\]`)?", radar_block.group(1))
+        items = re.findall(r"\d+\.\s+\*\*\[([^\]]+)\]\s+([^*]+)\*\*\s+`\[Impact:\s*([0-9.]+)/10\]`(?:\s+`\[([^\]]+)\]`)?", radar_block.group(1))
+        all_articles = data["sections"]["global"] + data["sections"]["vietnam"] + data["sections"]["science"]
+        for cat, title, score, tier in items:
+            clean_title = strip_emojis(title.strip())
+            # Find best matching article id
+            matching_id = None
+            for art in all_articles:
+                # Substring or token match
+                if clean_title[:30].lower() in art["title"].lower() or art["title"][:30].lower() in clean_title.lower():
+                    matching_id = art["id"]
+                    break
+            
+            data["executive_radar"].append({
+                "category": strip_emojis(cat.strip()),
+                "title": clean_title,
+                "score": float(score.strip()),
+                "tier": strip_emojis((tier or "").strip()),
+                "article_id": matching_id
+            })
+
+    # Radar Skim
+    skim_block = re.search(r"##\s*(?:[^\w\s]*\s*)?Quick-Scan Signals[^\n]*([\s\S]*?)$", md_content)
+    if skim_block:
+        skim_items = re.findall(r"\*\s+\*\*([^*]+)\*\*:\s+([^\n`]+)(?:`\[Impact:\s*([0-9.]+)/10\]`)?", skim_block.group(1))
         for topic, desc, score in skim_items:
             data["sections"]["radar_skim"].append({
-                "topic": topic.strip(),
-                "desc": desc.strip(),
+                "topic": strip_emojis(topic.strip()),
+                "desc": strip_emojis(desc.strip()),
                 "score": float(score.strip()) if score else 6.5
             })
 
@@ -190,6 +233,7 @@ def generate_html(data, out_path):
               900: '#1A1816',
               800: '#2C2825',
               700: '#423D38',
+              600: '#5A534B',
               500: '#706A62',
               400: '#948D84',
             }},
@@ -220,7 +264,6 @@ def generate_html(data, out_path):
       color: #1A1816;
       font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
-      /* Subtle newsprint tactile grain */
       background-image: radial-gradient(#E8E2D5 0.75px, transparent 0.75px);
       background-size: 16px 16px;
     }}
@@ -235,6 +278,7 @@ def generate_html(data, out_path):
       background-color: #FFFFFF;
       border: 1px solid #E5DFD3;
       box-shadow: 0 1px 3px rgba(35, 31, 28, 0.03), 0 1px 2px rgba(35, 31, 28, 0.02);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }}
 
     .paper-inset {{
@@ -259,6 +303,16 @@ def generate_html(data, out_path):
       border: 1px solid #CCDCEB;
     }}
 
+    /* Flash highlight when jumped from radar */
+    @keyframes jumpHighlight {{
+      0% {{ background-color: #FDF0EE; outline: 2px solid #9B2226; }}
+      50% {{ background-color: #FAF3E8; outline: 2px solid #9B2226; }}
+      100% {{ background-color: #FFFFFF; outline: none; }}
+    }}
+    .highlight-target {{
+      animation: jumpHighlight 2.4s ease-out;
+    }}
+
     /* Custom scrollbar */
     ::-webkit-scrollbar {{ width: 4px; height: 4px; }}
     ::-webkit-scrollbar-thumb {{ background: #D6CFC3; border-radius: 4px; }}
@@ -266,11 +320,11 @@ def generate_html(data, out_path):
 </head>
 <body class="min-h-screen pb-24 selection:bg-[#9B2226] selection:text-white">
 
-  <!-- Editorial Top Masthead -->
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-[#F8F5EE]/90 border-b border-[#E5DFD3] px-4 py-3">
+  <!-- Editorial Top Masthead (Pure Broadsheet Typography, Zero Emojis) -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-[#F8F5EE]/95 border-b border-[#E5DFD3] px-4 py-3">
     <div class="max-w-2xl mx-auto">
       <!-- Top edition line -->
-      <div class="flex items-center justify-between text-[10px] tracking-widest uppercase font-semibold text-ink-500 pb-1.5 border-b border-[#EAE4D8]">
+      <div class="flex items-center justify-between text-[10.5px] tracking-widest uppercase font-semibold text-ink-500 pb-1.5 border-b border-[#EAE4D8]">
         <span>Melbourne Edition</span>
         <span>{data.get("date", "Today")}</span>
         <span>Vol. I</span>
@@ -282,16 +336,16 @@ def generate_html(data, out_path):
           <h1 class="text-xl sm:text-2xl font-bold font-serif-headline tracking-tight text-ink-900 leading-none">
             DAILY INTELLIGENCE
           </h1>
-          <p class="text-[11px] font-serif italic text-ink-500 pt-0.5">Verified Global & Vietnam Strategic Analysis</p>
+          <p class="text-[11.5px] font-serif italic text-ink-500 pt-0.5">Verified Global & Vietnam Strategic Analysis</p>
         </div>
         
         <div class="flex items-center space-x-1.5">
           <!-- Search toggle -->
-          <button onclick="toggleSearch()" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
+          <button onclick="toggleSearch()" title="Search" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </button>
           <!-- Refresh -->
-          <button onclick="location.reload()" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
+          <button onclick="location.reload()" title="Refresh" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
           </button>
         </div>
@@ -311,41 +365,41 @@ def generate_html(data, out_path):
     <div class="p-4 rounded-lg bg-[#FAF7F0] border border-[#E2DBD0] shadow-sm relative">
       <div class="flex items-center space-x-2 mb-1.5">
         <span class="inline-block w-2 h-2 rounded-full bg-oxblood"></span>
-        <span class="text-[10px] font-bold uppercase tracking-widest text-oxblood">Executive Posture</span>
+        <span class="text-[10.5px] font-bold uppercase tracking-widest text-oxblood">Executive Posture</span>
       </div>
-      <p class="text-xs sm:text-sm font-serif text-ink-800 leading-relaxed italic">
+      <p class="text-sm sm:text-[15px] font-serif text-ink-800 leading-relaxed italic">
         "{data.get("global_posture", "Calibrated intelligence monitoring active.")}"
       </p>
     </div>
 
-    <!-- Category Tabs (Paper Pressed Pills) -->
+    <!-- Category Tabs (English Only, No Emojis) -->
     <div class="flex space-x-1.5 overflow-x-auto no-scrollbar py-1">
       <button onclick="setTab('all')" id="tab-all" class="px-3.5 py-1.5 rounded-md text-xs font-semibold bg-ink-900 text-paper-50 whitespace-nowrap shadow-sm transition">
-        All Feed
+        All Briefings
       </button>
       <button onclick="setTab('vietnam')" id="tab-vietnam" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
-        🇻🇳 Việt Nam
+        Vietnam Spotlight
       </button>
       <button onclick="setTab('global')" id="tab-global" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
-        🌐 Global Macro
+        Global Macro
       </button>
       <button onclick="setTab('science')" id="tab-science" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
-        🔬 Science & Med
+        Medicine & Science
       </button>
       <button onclick="setTab('radar')" id="tab-radar" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
-        ⚡ Radar Skim
+        Radar Signals
       </button>
     </div>
 
-    <!-- Executive Radar Top 3 -->
+    <!-- Executive Radar Top 3 (Clickable to jump straight to story) -->
     <section id="radarSection" class="space-y-2">
       <div class="flex items-center justify-between border-b border-[#E5DFD3] pb-1">
-        <h2 class="text-[11px] font-bold uppercase tracking-wider text-ink-700 flex items-center space-x-1.5">
-          <span>⚡ Top Impact Radar</span>
+        <h2 class="text-[11.5px] font-bold uppercase tracking-wider text-ink-700">
+          Top Impact Radar
         </h2>
-        <span class="text-[10px] text-ink-400 font-serif italic">Curated by weighted severity</span>
+        <span class="text-[10.5px] text-ink-500 font-serif italic">Tap item to read analysis</span>
       </div>
-      <div id="radarCards" class="grid gap-2">
+      <div id="radarCards" class="grid gap-2.5">
         <!-- Injected via JS -->
       </div>
     </section>
@@ -353,8 +407,8 @@ def generate_html(data, out_path):
     <!-- Main Articles Stream -->
     <section class="space-y-3 pt-2">
       <div class="flex items-center justify-between border-b border-[#E5DFD3] pb-1">
-        <h2 id="streamTitle" class="text-[11px] font-bold uppercase tracking-wider text-ink-700">
-          In-Depth Strategic Intelligence
+        <h2 id="streamTitle" class="text-[11.5px] font-bold uppercase tracking-wider text-ink-700">
+          Strategic Intelligence Feed
         </h2>
       </div>
       <div id="articlesContainer" class="space-y-4">
@@ -364,23 +418,23 @@ def generate_html(data, out_path):
 
   </main>
 
-  <!-- Bottom Navigation Bar for Mobile -->
+  <!-- Bottom Navigation Bar for Mobile (Clean English, No Emojis) -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#F8F5EE]/95 backdrop-blur-md border-t border-[#E5DFD3] px-6 py-2.5 flex items-center justify-around max-w-2xl mx-auto shadow-sm">
     <button onclick="setTab('all')" class="flex flex-col items-center space-y-1 text-oxblood">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-      <span class="text-[10px] font-semibold">Front Page</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Briefing</span>
     </button>
-    <button onclick="setTab('vietnam')" class="flex flex-col items-center space-y-1 text-ink-500 hover:text-ink-800">
-      <span class="text-base leading-none">🇻🇳</span>
-      <span class="text-[10px] font-medium">Việt Nam</span>
+    <button onclick="setTab('vietnam')" class="flex flex-col items-center space-y-1 text-ink-600 hover:text-ink-900">
+      <span class="text-xs font-bold font-serif tracking-widest text-ink-700">VN</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider">Vietnam</span>
     </button>
-    <button onclick="setTab('global')" class="flex flex-col items-center space-y-1 text-ink-500 hover:text-ink-800">
-      <span class="text-base leading-none">🌐</span>
-      <span class="text-[10px] font-medium">Global</span>
+    <button onclick="setTab('global')" class="flex flex-col items-center space-y-1 text-ink-600 hover:text-ink-900">
+      <span class="text-xs font-bold font-serif tracking-widest text-ink-700">GL</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider">Global</span>
     </button>
-    <button onclick="shareBrief()" class="flex flex-col items-center space-y-1 text-ink-500 hover:text-ink-800">
+    <button onclick="shareBrief()" class="flex flex-col items-center space-y-1 text-ink-600 hover:text-ink-900">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-      <span class="text-[10px] font-medium">Share</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider">Share</span>
     </button>
   </nav>
 
@@ -399,18 +453,50 @@ def generate_html(data, out_path):
       container.innerHTML = '';
       (briefData.executive_radar || []).forEach(item => {{
         const el = document.createElement('div');
-        el.className = 'p-3 rounded-lg paper-card flex items-start justify-between space-x-3 transition hover:border-[#D6CFC3]';
+        el.className = 'p-3.5 rounded-lg paper-card flex items-start justify-between space-x-3 cursor-pointer hover:border-oxblood hover:shadow-sm transition';
+        el.setAttribute('onclick', `jumpToArticle('${{item.article_id || ''}}', '${{item.category || ''}}')`);
         el.innerHTML = `
-          <div class="space-y-1">
-            <span class="text-[9px] font-bold text-ink-500 uppercase tracking-widest">${{item.category}}</span>
-            <p class="text-xs font-serif font-semibold text-ink-900 leading-snug">${{item.title}}</p>
+          <div class="space-y-1 flex-1">
+            <div class="flex items-center space-x-2">
+              <span class="text-[9.5px] font-bold text-ink-500 uppercase tracking-widest">${{item.category}}</span>
+              <span class="text-[10px] text-oxblood font-serif italic">Read Analysis →</span>
+            </div>
+            <p class="text-[14px] sm:text-[15px] font-serif font-semibold text-ink-900 leading-snug">${{item.title}}</p>
           </div>
-          <span class="px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${{getStampClass(item.score)}}">
+          <span class="px-2.5 py-1 rounded text-xs font-bold shrink-0 ${{getStampClass(item.score)}}">
             ${{item.score.toFixed(1)}}
           </span>
         `;
         container.appendChild(el);
       }});
+    }}
+
+    function jumpToArticle(articleId, categoryHint) {{
+      if (!articleId) return;
+
+      // Determine target article section
+      let targetSec = 'all';
+      const allArticles = [...(briefData.sections.vietnam || []), ...(briefData.sections.global || []), ...(briefData.sections.science || [])];
+      const target = allArticles.find(a => a.id === articleId);
+      if (target) {{
+        targetSec = target.section;
+      }}
+
+      // Switch tab if article is hidden in current tab
+      if (currentTab !== 'all' && currentTab !== targetSec) {{
+        setTab('all');
+      }}
+
+      setTimeout(() => {{
+        const el = document.getElementById(articleId);
+        if (el) {{
+          el.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+          el.classList.add('highlight-target');
+          setTimeout(() => {{
+            el.classList.remove('highlight-target');
+          }}, 2500);
+        }}
+      }}, 60);
     }}
 
     function renderArticles(filterCategory = 'all', searchQuery = '') {{
@@ -427,7 +513,8 @@ def generate_html(data, out_path):
         items = items.filter(i => 
           i.title.toLowerCase().includes(q) || 
           (i.so_what && i.so_what.toLowerCase().includes(q)) ||
-          (i.sources && i.sources.toLowerCase().includes(q))
+          (i.sources && i.sources.toLowerCase().includes(q)) ||
+          (i.metric && i.metric.toLowerCase().includes(q))
         );
       }}
 
@@ -445,58 +532,61 @@ def generate_html(data, out_path):
 
       items.forEach((art) => {{
         const card = document.createElement('article');
-        card.className = 'rounded-lg paper-card overflow-hidden transition hover:border-[#D0C8BB]';
+        card.id = art.id;
+        card.className = 'rounded-lg paper-card overflow-hidden transition';
 
-        const categoryTag = art.section === 'vietnam' ? '🇻🇳 Việt Nam' : (art.section === 'global' ? '🌐 Global Macro' : '🔬 Science & Medicine');
+        const categoryTag = art.section === 'vietnam' ? 'Vietnam Spotlight' : (art.section === 'global' ? 'Global Macro' : 'Medicine & Science');
         
         const factsHtml = (art.facts || []).map(f => `
-          <li class="flex items-start space-x-2 text-xs text-ink-800">
-            <span class="text-ink-400 shrink-0 font-bold">•</span>
-            <span class="leading-relaxed">${{f}}</span>
+          <li class="flex items-start space-x-2 text-[13.5px] sm:text-[14px] text-ink-800">
+            <span class="text-ink-400 shrink-0 font-bold leading-relaxed">•</span>
+            <span class="leading-relaxed font-sans">${{f}}</span>
           </li>
         `).join('');
 
         card.innerHTML = `
           <!-- Card Header -->
-          <div class="p-4 space-y-1.5 border-b border-[#F0EBE1]">
+          <div class="p-4 sm:p-5 space-y-2 border-b border-[#F0EBE1]">
             <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold text-ink-500 uppercase tracking-widest">${{categoryTag}}</span>
+              <span class="text-[10.5px] font-bold text-ink-500 uppercase tracking-widest">${{categoryTag}}</span>
               <div class="flex items-center space-x-1.5">
-                <span class="text-[9px] text-ink-400 uppercase font-semibold">Impact</span>
-                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${{getStampClass(art.score)}}">
+                <span class="text-[9.5px] text-ink-400 uppercase font-semibold">Impact</span>
+                <span class="px-2.5 py-0.5 rounded text-xs font-bold ${{getStampClass(art.score)}}">
                   ${{art.score.toFixed(1)}}
                 </span>
               </div>
             </div>
-            <h3 class="text-base font-bold font-serif-headline text-ink-900 leading-snug pt-0.5">${{art.title}}</h3>
-            ${{art.sources ? `<p class="text-[10px] text-ink-500 font-serif italic">Sources: ${{art.sources}}</p>` : ''}}
+            <h3 class="text-lg sm:text-xl font-bold font-serif-headline text-ink-900 leading-snug pt-0.5">${{art.title}}</h3>
+            ${{art.sources ? `<p class="text-[11px] text-ink-500 font-serif italic">Sources: ${{art.sources}}</p>` : ''}}
           </div>
 
           <!-- Card Body: Facts & So What -->
-          <div class="p-4 space-y-3.5 bg-[#FCFAF6]">
-            <!-- Facts list -->
+          <div class="p-4 sm:p-5 space-y-4 bg-[#FCFAF6]">
+            <!-- Core Facts -->
             <div>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-ink-600 block mb-1.5">Sự Kiện Cốt Lõi / The Facts</span>
-              <ul class="space-y-1.5">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-ink-600 block mb-2">Core Facts</span>
+              <ul class="space-y-2">
                 ${{factsHtml}}
               </ul>
             </div>
 
-            <!-- The So What (Analyst Ledger Box) -->
+            <!-- Strategic Implication (The So What) -->
             ${{art.so_what ? `
-              <div class="p-3.5 rounded-md bg-[#F4EFE6] border-l-[3px] border-oxblood space-y-1">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-oxblood flex items-center space-x-1">
-                  <span>🎯 Phân Tích Hệ Quả / The "So What?"</span>
+              <div class="p-3.5 sm:p-4 rounded-md bg-[#F4EFE6] border-l-[3px] border-oxblood space-y-1.5">
+                <span class="text-[10.5px] font-bold uppercase tracking-wider text-oxblood block">
+                  Strategic Implication
                 </span>
-                <p class="text-xs font-serif text-ink-800 leading-relaxed">${{art.so_what}}</p>
+                <p class="text-[14px] sm:text-[14.5px] font-serif text-ink-900 leading-relaxed">${{art.so_what}}</p>
               </div>
             ` : ''}}
 
-            <!-- Key Metric -->
+            <!-- Key Metric Box (Full display, No truncation) -->
             ${{art.metric ? `
-              <div class="flex items-center space-x-2 text-[11px] text-ink-700 bg-white px-2.5 py-1.5 rounded border border-[#E5DFD3]">
-                <span class="text-oxblood font-bold shrink-0">📊 Chỉ số:</span>
-                <span class="font-medium text-ink-900 truncate">${{art.metric}}</span>
+              <div class="p-3 sm:p-3.5 rounded bg-white border border-[#E5DFD3] shadow-xs">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-oxblood block mb-1">Key Metric</span>
+                <div class="font-sans font-medium text-ink-900 text-xs sm:text-[13px] leading-relaxed break-words">
+                  ${{art.metric}}
+                </div>
               </div>
             ` : ''}}
           </div>
@@ -507,7 +597,6 @@ def generate_html(data, out_path):
 
     function setTab(tab) {{
       currentTab = tab;
-      // Update Tab Pill styles
       ['all', 'vietnam', 'global', 'science', 'radar'].forEach(t => {{
         const btn = document.getElementById('tab-' + t);
         if (!btn) return;
