@@ -1,124 +1,139 @@
 {
-  "date": "22 October 2026",
-  "global_posture": "Resilience under structural stress — The global macro climate balances massive AI/tech capital expenditure against escalating energy and sovereign debt strains discussed at the IMF/WB Bangkok meetings, while Vietnam accelerates bilateral economic treaties in Europe with sustained ~8.4% annual GDP expansion.",
+  "date": "23 October 2026",
+  "global_posture": "Escalating energy friction confronts tightening sovereign yields — Crude and LNG risk premiums surge following infrastructure strikes in the Persian Gulf and Red Sea corridors, while Vietnam anchors long-term capital stability in Brussels through an EVFTA task force and advances decisive land valuation reforms in the National Assembly.",
   "executive_radar": [
     {
-      "category": "Global Macro",
-      "title": "IMF & World Bank Bangkok Summit: AI CapEx Buffers Geopolitical Shocks Amid Inflation Resurgence",
-      "score": 8.8,
-      "tier": "Tier 1: Systemic / Global",
+      "category": "Global Macro & Geopolitics",
+      "title": "Hormuz & Red Sea Energy Escalations: Infrastructure Strikes Trigger Winter Gas and Crude Risk Premiums",
+      "score": 9.1,
+      "tier": "Tier 1: Systemic Global Shock",
       "article_id": "art-1"
     },
     {
-      "category": "Vietnam Policy & Foreign Trade",
-      "title": "Tổng Bí thư, Chủ tịch nước Tô Lâm nâng cấp quan hệ với Đan Mạch lên Đối tác Chiến lược Toàn diện; Hoàn tất đàm phán FTA với EFTA",
-      "score": 8.6,
-      "tier": "Tier 1: Structural National Pivot",
-      "article_id": "art-2"
+      "category": "Vietnam Diplomacy & Foreign Trade",
+      "title": "Tổng Bí thư, Chủ tịch nước Tô Lâm hội đàm với Chủ tịch EC Ursula von der Leyen tại Brussels: Tối ưu hóa Tổ công tác EVFTA",
+      "score": 8.7,
+      "tier": "Tier 1: Structural Trade Pivot",
+      "article_id": "art-3"
     },
     {
       "category": "Medicine & Neuroscience",
-      "title": "2026 Nobel Prize in Medicine Awarded for Optogenetics; Landmark Cellular Aging Reversal in Human Neurons",
-      "score": 8.9,
+      "title": "Reversing 60 Years of Cellular Aging in Human Neurons and Resolving Alzheimer's Sleep Fragmentation",
+      "score": 8.8,
       "tier": "Tier 1: Scientific Breakthrough",
-      "article_id": "art-4"
+      "article_id": "art-5"
     }
   ],
   "sections": {
     "global": [
       {
         "id": "art-1",
-        "title": "IMF World Economic Outlook (Bangkok): Global Growth Forecast at 3.1%, Inflation Ticks Up to 4.7%",
-        "score": 8.8,
-        "score_breakdown": "Scope: 9.5 | Permanence: 8.5 | Actionability: 8.0",
-        "sources": "IMF World Economic Outlook, Bangkok G20 Communiqué, Reuters",
+        "title": "Hormuz & Red Sea Escalations: Drone Strikes on Gulf Infrastructure Trigger Spike in Energy Risk Premiums",
+        "score": 9.1,
+        "score_breakdown": "Scope: 9.5 | Permanence: 8.5 | Actionability: 9.0",
+        "sources": "Reuters, US State Department Bulletin, Westpac Global Macro Intelligence",
         "facts": [
-          "G20 finance ministers and central bankers convened in Bangkok for the IMF/World Bank annual meetings.",
-          "The IMF projected global growth at **3.1% for 2026** and **3.4% for 2027**, with inflation rebounding slightly to **4.7%** due to regional conflicts and energy market friction.",
-          "A divergence is widening: tech-heavy and AI-integrated economies (US, leading Asian hubs) are accelerating, while energy-dependent and conflict-adjacent regions face stagnation and debt servicing crises."
+          "Security conditions along critical Middle Eastern energy corridors degraded sharply following drone attacks on Dammam airport infrastructure in eastern Saudi Arabia and multiple vessel explosions near the Strait of Hormuz.",
+          "The US State Department ordered the departure of non-emergency diplomatic staff from Saudi Arabia, as joint US-Israeli plans for coordinated deterrent actions against Iranian energy and military installations were formalized.",
+          "Asian and European utilities entered direct spot-market competition for non-Middle Eastern liquefied natural gas (LNG) cargoes ahead of the northern winter, accelerating upward pressure on energy shipping freight and marine insurance rates."
         ],
-        "so_what": "Capital markets remain sustained primarily by unprecedented enterprise AI and green infrastructure CapEx. If enterprise AI monetization fails to keep pace with hyper-elevated capital expenditures, sovereign yields and equity valuations face sudden repricing risks. Central banks will have less room to aggressively cut rates into late 2026 due to sticky commodity inflation.",
-        "metric": "Global headline inflation revised up to **4.7%**; Global 2026 GDP growth pegged at **3.1%**.",
+        "so_what": "A prolonged maritime disruption in the Persian Gulf directly strains global central bank pivot timelines. Higher landed energy costs threaten to re-ignite headline consumer inflation across net energy-importing economies in Europe and East Asia. For global equity and bond markets, the combination of sticky energy inflation and rising 10-year sovereign bond yields severely narrows the runway for central bank policy easing into early 2027.",
+        "metric": "Spot LNG cargo premiums jumped **12–16%** across key Asian import hubs; Brent crude re-tested upper geopolitical risk bands.",
+        "section": "global"
+      },
+      {
+        "id": "art-2",
+        "title": "Sovereign Bond Yields Surge Globally as US 10-Year Benchmark Pressures Emerging Market Liquidity",
+        "score": 8.5,
+        "score_breakdown": "Scope: 9.0 | Permanence: 8.0 | Actionability: 8.5",
+        "sources": "Financial Times, Reserve Bank of Australia Communiqué, Bloomberg Markets",
+        "facts": [
+          "Global sovereign bond yields surged across major financial centers, led by persistent upward pressure on the benchmark US 10-year Treasury yield, which tightened international financial conditions.",
+          "Follow-up policy notes from the IMF Annual Meetings underscored that baseline global growth of 3.1% remains fragile against elevated public debt burdens and sustained high borrowing costs.",
+          "Central banks in developed markets, including the Reserve Bank of Australia (RBA) and European Central Bank (ECB), acknowledged that resilient services inflation and volatile commodities constrain near-term rate normalization."
+        ],
+        "so_what": "Widening yield differentials favor US Dollar asset holdings, placing continuous depreciation pressure on emerging market currencies. Net borrowing costs for emerging sovereign and corporate issuers will stay elevated, prioritizing domestic fiscal consolidation and careful currency defense measures over rapid credit expansion.",
+        "metric": "Benchmark US 10-year yield held near multi-month highs; emerging market corporate bond spreads widened by **22 basis points**.",
         "section": "global"
       }
     ],
     "vietnam": [
       {
-        "id": "art-2",
-        "title": "Tổng Bí thư, Chủ tịch nước Tô Lâm công du châu Âu: Nâng cấp Đối tác Chiến lược Toàn diện với Đan Mạch, hoàn tất FTA với khối EFTA",
-        "score": 8.6,
+        "id": "art-3",
+        "title": "Tổng Bí thư, Chủ tịch nước Tô Lâm hội đàm với Chủ tịch EC Ursula von der Leyen tại Brussels: Tối ưu hóa Tổ công tác EVFTA",
+        "score": 8.7,
         "score_breakdown": "Scope: 8.5 | Permanence: 9.0 | Actionability: 8.5",
-        "sources": "VnExpress, Vietnam News Agency, Tuổi Trẻ, European Commission",
+        "sources": "VnEconomy, Thông tấn xã Việt Nam, European Commission Press Release",
         "facts": [
-          "Tổng Bí thư, Chủ tịch nước Tô Lâm đã hoàn tất chuyến thăm cấp nhà nước tới Đan Mạch, chính thức nâng cấp quan hệ hai nước lên **Đối tác Chiến lược Toàn diện (Comprehensive Strategic Partnership)**, tập trung mũi nhọn vào chuyển dịch năng lượng xanh, điện gió ngoài khơi và công nghệ cao.",
-          "Việt Nam đồng thời hoàn tất đàm phán Hiệp định Thương mại Tự do (FTA) với khối EFTA (Thụy Sĩ, Na Uy, Iceland, Liechtenstein) và làm việc trực tiếp với Liên minh châu Âu (EU) và Bỉ.",
-          "Song song đó, Chính phủ ban hành Nghị định số 374/2026/NĐ-CP (hiệu lực từ 14/11/2026) nhằm tháo gỡ quy trình đấu thầu quốc tế theo chuẩn EVFTA, CPTPP và UKVFTA."
+          "Ngày 22/10 tại Brussels, Tổng Bí thư, Chủ tịch nước Tô Lâm đã hội đàm với Chủ tịch Ủy ban châu Âu (EC) Ursula von der Leyen, tái khẳng định Liên minh châu Âu (EU) là một trong những đối tác chiến lược và kinh tế quan trọng hàng đầu của Việt Nam.",
+          "Hai bên thống nhất kích hoạt và tối ưu hóa hoạt động của Tổ công tác đặc biệt triển khai Hiệp định EVFTA, nhằm tháo gỡ triệt để các rào cản kỹ thuật và đẩy mạnh thực thi cam kết thương mại - đầu tư xanh.",
+          "Phía Việt Nam đề nghị EC sớm gỡ bỏ cảnh báo \"thẻ vàng\" IUU đối với hải sản Việt Nam và khuyến khích các quốc gia thành viên EU hoàn tất phê chuẩn Hiệp định Bảo hộ Đầu tư (EVIPA)."
         ],
-        "so_what": "**Mở rộng thị trường phi truyền thống**: Việc chốt FTA với EFTA và tăng cường cam kết với EU giúp Việt Nam đa dạng hóa thị trường xuất khẩu, giảm thiểu rủi ro phụ thuộc vào một vài đối tác lớn trong bối cảnh thương mại toàn cầu phân mảnh.\n  - **Dòng vốn FDI chất lượng cao**: Đan Mạch và EU là các mắt xích hạt nhân về công nghệ năng lượng tái tạo; thỏa thuận mở đường cho các dự án điện gió ngoài khơi và trung tâm dữ liệu xanh quy mô hàng tỷ USD đổ vào Việt Nam giai đoạn 2026–2030.",
-        "metric": "Khối EFTA mở ra thị trường tiêu thụ có GDP bình quân đầu người trên **85.000 USD**; tạo hành lang pháp lý cho gói đầu tư xanh mới.",
+        "so_what": "**Bảo vệ thị phần xuất khẩu chủ lực**: Việc trực tiếp thắt chặt cơ chế điều hành EVFTA ở cấp lãnh đạo cao nhất giúp hàng dệt may, da giày, điện tử và nông sản Việt Nam củng cố lợi thế thuế quan trước làn sóng bảo hộ thương mại gia tăng tại châu Âu.\n  - **Thu hút vốn đầu tư chuyển đổi xanh**: Tổ công tác EVFTA tập trung vào các tiêu chuẩn CBAM (cơ chế điều chỉnh biên giới carbon) và năng lượng tái tạo, tạo hành lang pháp lý an toàn để các tập đoàn công nghiệp châu Âu rót vốn FDI vào hạ tầng cảng biển và điện gió ngoài khơi tại Việt Nam.",
+        "metric": "Kim ngạch thương mại hai chiều Việt Nam - EU tiếp tục đà tăng trưởng trên **14%**; EU giữ vững vị thế là đối tác thương mại lớn thứ 4 của Việt Nam.",
         "section": "vietnam"
       },
       {
-        "id": "art-3",
-        "title": "Quốc hội Khóa 16 Khai mạc Kỳ họp thứ 2: Đánh giá Tăng trưởng GDP 2026 đạt ~8,4%, Đặt Mục tiêu Tối thiểu 10% cho 2027",
-        "score": 8.2,
-        "score_breakdown": "Scope: 8.5 | Permanence: 8.0 | Actionability: 8.0",
-        "sources": "Cổng Thông tin Điện tử Chính phủ, Báo Nhân Dân, IMF Country Report",
+        "id": "art-4",
+        "title": "Quốc hội Khóa 16 Thảo luận Sửa đổi Bộ ba Luật: Luật Đất đai, Luật Nhà ở, Luật Kinh doanh Bất động sản",
+        "score": 8.3,
+        "score_breakdown": "Scope: 8.5 | Permanence: 8.5 | Actionability: 8.0",
+        "sources": "Báo Nhân Dân, Báo Sài Gòn Giải Phóng, Cổng Thông tin Quốc hội",
         "facts": [
-          "Báo cáo của Thủ tướng Chính phủ tại kỳ họp Quốc hội nêu rõ: 14/15 chỉ tiêu kinh tế - xã hội năm 2026 dự kiến đạt và vượt kế hoạch, trong đó tăng trưởng GDP quý 3 đạt 9,95% và cả năm 2026 ước đạt 8,4% (thuộc nhóm cao nhất thế giới theo IMF).",
-          "Chính phủ chính thức gia hạn chính sách giảm thuế bảo vệ môi trường đối với nhiên liệu đến hết tháng 12/2026 nhằm kìm hãm áp lực lạm phát nhập khẩu.",
-          "TP.HCM đồng thời chuẩn bị tổ chức Diễn đàn Kinh tế Mùa thu (26-29/10/2026), dự kiến công bố hơn 13 tỷ USD vốn đăng ký đầu tư mới."
+          "Trong các phiên thảo luận tổ ngày 22–23/10 tại Kỳ họp thứ 2 Quốc hội khóa 16, các đại biểu tập trung tháo gỡ các vướng mắc thực thi liên quan đến Luật Đất đai, Luật Nhà ở và Luật Kinh doanh Bất động sản.",
+          "Chủ tịch Quốc hội Trần Thanh Mẫn nhấn mạnh nguyên tắc định giá đất phải bảo đảm hài hòa lợi ích giữa Nhà nước, người sử dụng đất và nhà đầu tư; nghiên cứu chu kỳ bảng giá đất 5 năm ổn định kèm cơ chế điều chỉnh linh hoạt khi biến động thị trường vượt ngưỡng.",
+          "Quốc hội thảo luận các quy định siết chặt kiểm soát dòng tiền đặt cọc dự án hình thành trong tương lai, minh bạch thông tin pháp lý dự án và tăng tốc chính sách ưu đãi phát triển nhà ở xã hội, nhà ở cho thuê."
         ],
-        "so_what": "Áp lực điều hành vĩ mô chuyển dịch từ \"kích thích tăng trưởng\" sang \"kiểm soát lạm phát và ổn định tỷ giá VND/USD\" khi giá năng lượng thế giới biến động. Mục tiêu 10% năm 2027 đòi hỏi đẩy nhanh giải ngân đầu tư công (đặc biệt các dự án hạ tầng như đường sắt tốc độ cao và Sân bay Long Thành).",
-        "metric": "GDP Q3/2026 tăng **9,95%**; mục tiêu GDP 2027 là **≥ 10%**; gói vốn dự kiến tại Diễn đàn Kinh tế TP.HCM đạt **> 13 tỷ USD**.",
+        "so_what": "**Khai thông điểm nghẽn pháp lý địa phương**: Việc chuẩn hóa phương pháp định giá đất giải tỏa tình trạng đình trệ phê duyệt dự án bất động sản và hạ tầng tại Hà Nội, TP.HCM và các tỉnh vệ tinh, giúp các doanh nghiệp bất động sản uy tín tái khởi động nguồn cung.\n  - **Thanh lọc cấu trúc tài chính dự án**: Kiểm soát chặt chẽ tỷ lệ tiền cọc và điều kiện bán nhà trên giấy buộc các chủ đầu tư phải tăng năng lực vốn tự có, giảm tỷ lệ đòn bẩy tài chính rủi ro và bảo vệ niềm tin của người mua nhà cá nhân.",
+        "metric": "Hơn **40 dự thảo luật và nghị quyết** được xem xét trong kỳ họp; giải phóng hàng trăm nghìn tỷ đồng vốn tồn đọng trong các dự án chờ phê duyệt tiền sử dụng đất.",
         "section": "vietnam"
       }
     ],
     "science": [
       {
-        "id": "art-4",
-        "title": "2026 Nobel Prize in Physiology or Medicine Awarded for Optogenetics",
-        "score": 8.9,
-        "score_breakdown": "Scope: 9.0 | Permanence: 9.5 | Actionability: 8.0",
-        "sources": "Nobel Prize Committee, Science, Nature Neuroscience",
+        "id": "art-5",
+        "title": "Reversing 60 Years of Cellular Aging in Human Neurons & Microglial Sleep Reset",
+        "score": 8.8,
+        "score_breakdown": "Scope: 9.0 | Permanence: 9.0 | Actionability: 8.5",
+        "sources": "Aging Cell (University of Bonn), Alzheimer’s & Dementia (University of Kentucky)",
         "facts": [
-          "The 2026 Nobel Prize was awarded to Karl Deisseroth, Peter Hegemann, and Georg Nagel for discoveries enabling the precise control of individual neurons using light-gated ion channels (*channelrhodopsin*).",
-          "The technology allows researchers to turn targeted neural circuits on or off with millisecond precision in living tissue."
+          "Neuroscientists at the University of Bonn demonstrated a sustained epigenetic age reset: by reprogramming human blood cells from an 80-year-old donor into neural stem cells, they rolled back the cellular molecular age profile to under 20 years without destabilizing genomic integrity.",
+          "Companion research from the University of Kentucky proved that cognitive deterioration in dementia is heavily mediated by hyperactive microglial immune cells disrupting sleep architecture. Temporarily suppressing these neuroinflammatory cells restored over two hours of restorative deep delta sleep per day in living models, completely independent of amyloid plaque removal."
         ],
-        "so_what": "Optogenetics has fundamentally rewritten modern neuroscience. It provides the biological foundation for next-generation clinical interventions in Parkinson’s disease, intractable epilepsy, and severe psychiatric disorders (such as targeted deep brain stimulation and neural prosthetics), transitioning mental health treatment from blunt chemical alteration to circuit-specific calibration.",
+        "so_what": "Moves the frontier of neurodegenerative therapeutics from reactive plaque clearance toward proactive neuroinflammation suppression and sleep restoration. Restoring deep-wave sleep provides an immediate, measurable clinical endpoint to arrest cognitive decline in early-stage patients.",
         "metric": "",
         "section": "science"
       },
       {
-        "id": "art-5",
-        "title": "Reversing 60 Years of Cellular Aging in Human Neurons & Alzheimer’s Sleep Target",
-        "score": 8.4,
-        "score_breakdown": "Scope: 8.5 | Permanence: 8.5 | Actionability: 8.0",
-        "sources": "Aging Cell (Univ. of Bonn), Alzheimer’s & Dementia (Univ. of Kentucky)",
+        "id": "art-6",
+        "title": "Stress Hormones Permanently Alter Neural Connectivity for Emotional Memory (*Science Advances*)",
+        "score": 7.8,
+        "score_breakdown": "Scope: 8.0 | Permanence: 7.5 | Actionability: 8.0",
+        "sources": "Science Advances (Yale University School of Medicine)",
         "facts": [
-          "Cellular Reversal**: University of Bonn researchers successfully reprogrammed blood cells from an 80-year-old donor into neural stem cells, resetting their molecular epigenetic age back to under 20 years (a 60+ year rollback).",
-          "Sleep & Dementia**: In a companion discovery, University of Kentucky neuroscientists revealed that overactive brain immune cells (microglia)—rather than amyloid plaques alone—are the primary drivers of severe sleep fragmentation in Alzheimer's. Temporarily suppressing these cells restored >2 hours of restorative deep sleep per day in models."
+          "Yale researchers identified the precise molecular mechanism by which acute spikes in cortisol modify functional communication between the basolateral amygdala and the hippocampus.",
+          "The study revealed that stress hormones actively bypass standard memory pruning pathways, chemically locking emotionally charged threat perceptions into permanent recall circuits while impairing unrelated factual memory consolidation."
         ],
-        "so_what": "Shifts the Alzheimer’s therapeutic paradigm: Instead of solely clearing plaques (which has shown limited clinical recovery), interventions directly targeting neuroinflammation can rapidly restore restorative sleep architecture, potentially halting cognitive decline earlier in the disease cycle.\n\n---",
+        "so_what": "Establishes a concrete biochemical target for post-traumatic stress interventions: therapeutic dampening of cortisol-receptor signaling in the immediate hours following acute trauma can prevent the pathological consolidation of intrusive fear memories.\n\n---",
         "metric": "",
         "section": "science"
       }
     ],
     "radar_skim": [
       {
-        "topic": "EU Trade Defense",
-        "desc": "The European Commission is preparing new \"second-strike\" instruments empowering the bloc to restrict single-market access against non-market subsidies in clean-tech and electric vehicles.",
-        "score": 7.2
+        "topic": "Indo-Pacific Defense",
+        "desc": "Australia and East Timor signed a bilateral security pact in Dili backed by a **A$62 million** funding package targeting maritime and cyber security across Australia's northern approaches.",
+        "score": 7.4
       },
       {
-        "topic": "Psychiatry & DBS",
-        "desc": "Mount Sinai researchers mapped 3 white-matter pathways essential for successful Deep Brain Stimulation in treatment-resistant depression, turning a historically hit-or-miss surgery into an imaging-guided precision procedure.",
+        "topic": "Ho Chi Minh City International Finance",
+        "desc": "TP.HCM chuẩn bị công bố **13 tỷ USD** vốn đầu tư và 10 định chế đầu tiên gia nhập Trung tâm Tài chính Quốc tế (VIFC-HCMC) tại Diễn đàn Kinh tế Mùa thu (26-29/10).",
+        "score": 7.6
+      },
+      {
+        "topic": "Structural Biology",
+        "desc": "UC Berkeley unveiled a laser phase plate for Cryo-EM electron microscopes, overcoming a century-old physical limit to capture tiny intracellular protein structures in native states.",
         "score": 7.5
-      },
-      {
-        "topic": "Vietnam Retail & Price Caps",
-        "desc": "Công điện 70/CĐ-TTg của Thủ tướng yêu cầu thanh tra giám sát giá hàng hóa tiêu dùng thiết yếu trước đợt cao điểm Tết 2027, hạn chế tình trạng tăng giá té nước theo mưa.",
-        "score": 6.8
       }
     ]
   }
