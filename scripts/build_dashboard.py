@@ -105,34 +105,36 @@ def parse_markdown_brief(md_content):
         return articles
 
     # Global Section
-    global_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:1\.\s*)?Global Macro & Geopolitics([\s\S]*?)(?=##|\Z)", md_content)
+    global_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:1\.\s*)?Global Macro & Geopolitics([\s\S]*?)(?=\n## [^\n#]|\Z)", md_content)
     if global_block:
         data["sections"]["global"] = extract_articles(global_block.group(1), "global")
 
     # Vietnam Section
-    vn_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:2\.\s*)?(?:Vietnam Spotlight|Tiêu Điểm Việt Nam)[^\n]*([\s\S]*?)(?=##|\Z)", md_content)
+    vn_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:2\.\s*)?(?:Vietnam Spotlight|Tiêu Điểm Việt Nam)[^\n]*([\s\S]*?)(?=\n## [^\n#]|\Z)", md_content)
     if vn_block:
         data["sections"]["vietnam"] = extract_articles(vn_block.group(1), "vietnam")
 
     # Science Section
-    sci_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:3\.\s*)?Medicine, Psychology & Science([\s\S]*?)(?=##|\Z)", md_content)
+    sci_block = re.search(r"##\s*(?:[^\w\s]*\s*)?(?:3\.\s*)?Medicine, Psychology & Science([\s\S]*?)(?=\n## [^\n#]|\Z)", md_content)
     if sci_block:
         data["sections"]["science"] = extract_articles(sci_block.group(1), "science")
 
     # Extract Executive Radar and match with article IDs
-    radar_block = re.search(r"##\s*(?:[^\w\s]*\s*)?Executive Radar \([^)]+\)([\s\S]*?)(?=##|\Z)", md_content)
+    radar_block = re.search(r"##\s*(?:[^\w\s]*\s*)?Executive Radar[^\n]*\n([\s\S]*?)(?=\n## |\Z)", md_content)
     if radar_block:
         items = re.findall(r"\d+\.\s+\*\*\[([^\]]+)\]\s+([^*]+)\*\*\s+`\[Impact:\s*([0-9.]+)/10\]`(?:\s+`\[([^\]]+)\]`)?", radar_block.group(1))
         all_articles = data["sections"]["global"] + data["sections"]["vietnam"] + data["sections"]["science"]
         for cat, title, score, tier in items:
             clean_title = strip_emojis(title.strip())
-            # Find best matching article id
+            clean_words = set(re.findall(r'\w+', clean_title.lower()))
             matching_id = None
+            max_overlap = 0
             for art in all_articles:
-                # Substring or token match
-                if clean_title[:30].lower() in art["title"].lower() or art["title"][:30].lower() in clean_title.lower():
+                art_words = set(re.findall(r'\w+', art["title"].lower()))
+                overlap = len(clean_words.intersection(art_words))
+                if overlap > max_overlap and overlap >= 2:
+                    max_overlap = overlap
                     matching_id = art["id"]
-                    break
             
             data["executive_radar"].append({
                 "category": strip_emojis(cat.strip()),
@@ -533,7 +535,7 @@ def generate_html(data, out_path):
       items.forEach((art) => {{
         const card = document.createElement('article');
         card.id = art.id;
-        card.className = 'rounded-lg paper-card overflow-hidden transition';
+        card.className = 'rounded-lg paper-card overflow-hidden transition scroll-mt-24';
 
         const categoryTag = art.section === 'vietnam' ? 'Vietnam Spotlight' : (art.section === 'global' ? 'Global Macro' : 'Medicine & Science');
         
