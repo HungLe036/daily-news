@@ -208,10 +208,10 @@ def generate_html(data, out_path):
   <meta name="apple-mobile-web-app-title" content="DailyIntel">
   <link rel="manifest" href="manifest.json">
   
-  <!-- Editorial Typography: Newsreader (Serif) + Plus Jakarta Sans (UI) -->
+  <!-- Clean Modern Editorial Sans-Serif Typography: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap" rel="stylesheet">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -219,8 +219,7 @@ def generate_html(data, out_path):
       theme: {{
         extend: {{
           fontFamily: {{
-            serif: ['Newsreader', 'Georgia', 'Cambria', 'serif'],
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
           }},
           colors: {{
             paper: {{
@@ -260,19 +259,14 @@ def generate_html(data, out_path):
     }}
   </script>
   <style>
-    /* Paper Page Aesthetics */
+    /* Paper Page Aesthetics - Clean Modern Sans-Serif */
     body {{
       background-color: #F8F5EE;
       color: #1A1816;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
       background-image: radial-gradient(#E8E2D5 0.75px, transparent 0.75px);
       background-size: 16px 16px;
-    }}
-    
-    .font-serif-headline {{
-      font-family: 'Newsreader', Georgia, serif;
-      letter-spacing: -0.015em;
     }}
 
     /* Paper Card: Crisp, matte, understated */
@@ -335,10 +329,10 @@ def generate_html(data, out_path):
       <!-- Main Broadsheet Title Bar -->
       <div class="flex items-center justify-between pt-2">
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold font-serif-headline tracking-tight text-ink-900 leading-none">
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-ink-900 leading-none">
             DAILY INTELLIGENCE
           </h1>
-          <p class="text-[11.5px] font-serif italic text-ink-500 pt-0.5">Verified Global & Vietnam Strategic Analysis</p>
+          <p class="text-[11.5px] font-medium text-ink-500 pt-0.5">Verified Global & Vietnam Strategic Analysis</p>
         </div>
         
         <div class="flex items-center space-x-1.5">
@@ -373,7 +367,7 @@ def generate_html(data, out_path):
         <span class="inline-block w-2 h-2 rounded-full bg-oxblood"></span>
         <span class="text-[10.5px] font-bold uppercase tracking-widest text-oxblood">Executive Posture</span>
       </div>
-      <p class="text-sm sm:text-[15px] font-serif text-ink-800 leading-relaxed italic">
+      <p class="text-sm sm:text-[14.5px] font-medium text-ink-800 leading-relaxed italic">
         "{data.get("global_posture", "Calibrated intelligence monitoring active.")}"
       </p>
     </div>
@@ -403,7 +397,7 @@ def generate_html(data, out_path):
         <h2 class="text-[11.5px] font-bold uppercase tracking-wider text-ink-700">
           Top Impact Radar
         </h2>
-        <span class="text-[10.5px] text-ink-500 font-serif italic">Tap item to read analysis</span>
+        <span class="text-[10.5px] text-ink-500 font-medium">Tap item to read analysis</span>
       </div>
       <div id="radarCards" class="grid gap-2.5">
         <!-- Injected via JS -->
@@ -445,9 +439,9 @@ def generate_html(data, out_path):
           <div class="space-y-1 flex-1">
             <div class="flex items-center space-x-2">
               <span class="text-[9.5px] font-bold text-ink-500 uppercase tracking-widest">${{item.category}}</span>
-              <span class="text-[10px] text-oxblood font-serif italic">Read Analysis →</span>
+              <span class="text-[10px] text-oxblood font-semibold tracking-wide">Read Analysis &rarr;</span>
             </div>
-            <p class="text-[14px] sm:text-[15px] font-serif font-semibold text-ink-900 leading-snug">${{item.title}}</p>
+            <p class="text-[14px] sm:text-[15px] font-semibold text-ink-900 leading-snug">${{item.title}}</p>
           </div>
           <span class="px-2.5 py-1 rounded text-xs font-bold shrink-0 ${{getStampClass(item.score)}}">
             ${{item.score.toFixed(1)}}
@@ -509,7 +503,7 @@ def generate_html(data, out_path):
 
       if (items.length === 0) {{
         container.innerHTML = `
-          <div class="text-center py-8 text-xs font-serif italic text-ink-400">
+          <div class="text-center py-8 text-xs font-medium text-ink-400">
             No developments matching current filter.
           </div>
         `;
@@ -542,8 +536,8 @@ def generate_html(data, out_path):
                 </span>
               </div>
             </div>
-            <h3 class="text-lg sm:text-xl font-bold font-serif-headline text-ink-900 leading-snug pt-0.5">${{art.title}}</h3>
-            ${{art.sources ? `<p class="text-[11px] text-ink-500 font-serif italic">Sources: ${{art.sources}}</p>` : ''}}
+            <h3 class="text-lg sm:text-xl font-bold tracking-tight text-ink-900 leading-snug pt-0.5">${{art.title}}</h3>
+            ${{art.sources ? `<p class="text-[11px] text-ink-500 font-medium">Sources: ${{art.sources}}</p>` : ''}}
           </div>
 
           <!-- Card Body: Facts & So What -->
@@ -562,7 +556,7 @@ def generate_html(data, out_path):
                 <span class="text-[10.5px] font-bold uppercase tracking-wider text-oxblood block">
                   Strategic Implication
                 </span>
-                <p class="text-[14px] sm:text-[14.5px] font-serif text-ink-900 leading-relaxed">${{art.so_what}}</p>
+                <p class="text-[13.5px] sm:text-[14px] font-normal text-ink-900 leading-relaxed">${{art.so_what}}</p>
               </div>
             ` : ''}}
 
