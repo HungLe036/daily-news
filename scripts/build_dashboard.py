@@ -320,7 +320,7 @@ def generate_html(data, out_path):
     ::-webkit-scrollbar-thumb {{ background: #D6CFC3; border-radius: 4px; }}
   </style>
 </head>
-<body class="min-h-screen pb-24 selection:bg-[#9B2226] selection:text-white">
+<body class="min-h-screen pb-12 selection:bg-[#9B2226] selection:text-white">
 
   <!-- Editorial Top Masthead (Pure Broadsheet Typography, Zero Emojis) -->
   <header class="sticky top-0 z-50 backdrop-blur-md bg-[#F8F5EE]/95 border-b border-[#E5DFD3] px-4 py-3">
@@ -345,6 +345,10 @@ def generate_html(data, out_path):
           <!-- Search toggle -->
           <button onclick="toggleSearch()" title="Search" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </button>
+          <!-- Share -->
+          <button onclick="shareBrief()" title="Share" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
           </button>
           <!-- Refresh -->
           <button onclick="location.reload()" title="Refresh" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
@@ -419,26 +423,6 @@ def generate_html(data, out_path):
     </section>
 
   </main>
-
-  <!-- Bottom Navigation Bar for Mobile (Clean English, No Emojis) -->
-  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#F8F5EE]/95 backdrop-blur-md border-t border-[#E5DFD3] px-6 py-2.5 flex items-center justify-around max-w-2xl mx-auto shadow-sm">
-    <button onclick="setTab('all')" class="flex flex-col items-center space-y-1 text-oxblood">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-      <span class="text-[10px] font-semibold uppercase tracking-wider">Briefing</span>
-    </button>
-    <button onclick="setTab('vietnam')" class="flex flex-col items-center space-y-1 text-ink-600 hover:text-ink-900">
-      <span class="text-xs font-bold font-serif tracking-widest text-ink-700">VN</span>
-      <span class="text-[10px] font-medium uppercase tracking-wider">Vietnam</span>
-    </button>
-    <button onclick="setTab('global')" class="flex flex-col items-center space-y-1 text-ink-600 hover:text-ink-900">
-      <span class="text-xs font-bold font-serif tracking-widest text-ink-700">GL</span>
-      <span class="text-[10px] font-medium uppercase tracking-wider">Global</span>
-    </button>
-    <button onclick="shareBrief()" class="flex flex-col items-center space-y-1 text-ink-600 hover:text-ink-900">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-      <span class="text-[10px] font-medium uppercase tracking-wider">Share</span>
-    </button>
-  </nav>
 
   <script>
     const briefData = {json_str};
