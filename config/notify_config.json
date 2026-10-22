@@ -1,6 +1,6 @@
 {
   "ntfy_topic": "hung-daily-intel-melbourne",
-  "dashboard_url": "",
+  "dashboard_url": "https://hungle036.github.io/daily-news/",
   "telegram_bot_token": "",
   "telegram_chat_id": "",
   "discord_webhook_url": ""
