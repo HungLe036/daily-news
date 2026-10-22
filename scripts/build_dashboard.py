@@ -114,6 +114,7 @@ def parse_markdown_brief(md_content):
 
 def build():
     os.makedirs(WEB_DIR, exist_ok=True)
+    os.makedirs(DOCS_DIR, exist_ok=True)
     
     # Find most recent markdown brief
     md_files = [f for f in os.listdir(BRIEFS_DIR) if f.endswith(".md")]
@@ -129,8 +130,6 @@ def build():
 
     data = parse_markdown_brief(content)
     
-    os.makedirs(DOCS_DIR, exist_ok=True)
-    
     # Write JSON data for PWA / client fetching
     for folder in [WEB_DIR, DOCS_DIR]:
         json_path = os.path.join(folder, "data.json")
@@ -139,7 +138,7 @@ def build():
 
         html_path = os.path.join(folder, "index.html")
         generate_html(data, html_path)
-        
+
     # Sync supporting files (manifest, sw, icons)
     for asset in ["manifest.json", "sw.js", "icon-192.png", "icon-512.png"]:
         src = os.path.join(WEB_DIR, asset)
@@ -154,35 +153,60 @@ def build():
 def generate_html(data, out_path):
     json_str = json.dumps(data, ensure_ascii=False)
     html_content = f"""<!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Daily Intelligence Briefing</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="DailyIntel">
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Editorial Typography: Newsreader (Serif) + Plus Jakarta Sans (UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {{
-      darkMode: 'class',
       theme: {{
         extend: {{
+          fontFamily: {{
+            serif: ['Newsreader', 'Georgia', 'Cambria', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
+          }},
           colors: {{
-            brand: {{
-              50: '#f0fdf4',
-              500: '#10b981',
-              600: '#059669',
-              900: '#064e3b',
+            paper: {{
+              50: '#FDFCF7',
+              100: '#FBF9F3',
+              200: '#F7F4EB',
+              300: '#EFEBE0',
+              border: '#E5DFD3',
+              borderDark: '#D6CFC3',
             }},
-            surface: {{
-              light: '#f8fafc',
-              dark: '#0f172a',
-              cardDark: '#1e293b',
-              cardLight: '#ffffff',
-              borderDark: '#334155',
-              borderLight: '#e2e8f0'
+            ink: {{
+              900: '#1A1816',
+              800: '#2C2825',
+              700: '#423D38',
+              500: '#706A62',
+              400: '#948D84',
+            }},
+            oxblood: {{
+              DEFAULT: '#9B2226',
+              soft: '#FBF0EE',
+              border: '#F0CAC5',
+            }},
+            amber: {{
+              DEFAULT: '#8F5206',
+              soft: '#FAF3E8',
+              border: '#EDDAC0',
+            }},
+            slate: {{
+              DEFAULT: '#244263',
+              soft: '#EEF3F8',
+              border: '#CCDCEB',
             }}
           }}
         }}
@@ -190,90 +214,136 @@ def generate_html(data, out_path):
     }}
   </script>
   <style>
+    /* Paper Page Aesthetics */
     body {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #F8F5EE;
+      color: #1A1816;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
+      /* Subtle newsprint tactile grain */
+      background-image: radial-gradient(#E8E2D5 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
     }}
+    
+    .font-serif-headline {{
+      font-family: 'Newsreader', Georgia, serif;
+      letter-spacing: -0.015em;
+    }}
+
+    /* Paper Card: Crisp, matte, understated */
+    .paper-card {{
+      background-color: #FFFFFF;
+      border: 1px solid #E5DFD3;
+      box-shadow: 0 1px 3px rgba(35, 31, 28, 0.03), 0 1px 2px rgba(35, 31, 28, 0.02);
+    }}
+
+    .paper-inset {{
+      background-color: #F4EFE6;
+      border: 1px solid #E8E2D7;
+    }}
+
+    /* Editorial Wax/Stamp Badges */
+    .stamp-tier-1 {{
+      background-color: #FDF0EE;
+      color: #9B2226;
+      border: 1px solid #F0CAC5;
+    }}
+    .stamp-tier-2 {{
+      background-color: #FAF3E8;
+      color: #8F5206;
+      border: 1px solid #EDDAC0;
+    }}
+    .stamp-tier-3 {{
+      background-color: #EEF3F8;
+      color: #244263;
+      border: 1px solid #CCDCEB;
+    }}
+
     /* Custom scrollbar */
     ::-webkit-scrollbar {{ width: 4px; height: 4px; }}
-    ::-webkit-scrollbar-thumb {{ background: #475569; border-radius: 4px; }}
-    /* Impact badge pill */
-    .badge-tier-1 {{ background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }}
-    .badge-tier-2 {{ background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }}
-    .badge-tier-3 {{ background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }}
+    ::-webkit-scrollbar-thumb {{ background: #D6CFC3; border-radius: 4px; }}
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen pb-20 selection:bg-emerald-500 selection:text-white">
+<body class="min-h-screen pb-24 selection:bg-[#9B2226] selection:text-white">
 
-  <!-- Sticky Top Header -->
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/85 border-b border-slate-800 px-4 py-3.5 flex items-center justify-between">
-    <div class="flex items-center space-x-2.5">
-      <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
-        ⚡
+  <!-- Editorial Top Masthead -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-[#F8F5EE]/90 border-b border-[#E5DFD3] px-4 py-3">
+    <div class="max-w-2xl mx-auto">
+      <!-- Top edition line -->
+      <div class="flex items-center justify-between text-[10px] tracking-widest uppercase font-semibold text-ink-500 pb-1.5 border-b border-[#EAE4D8]">
+        <span>Melbourne Edition</span>
+        <span>{data.get("date", "Today")}</span>
+        <span>Vol. I</span>
       </div>
-      <div>
-        <h1 class="text-sm font-semibold tracking-tight text-white leading-tight">Daily Intelligence</h1>
-        <p class="text-[11px] text-slate-400 font-medium" id="briefDate">{data.get("date", "Today")}</p>
+
+      <!-- Main Broadsheet Title Bar -->
+      <div class="flex items-center justify-between pt-2">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold font-serif-headline tracking-tight text-ink-900 leading-none">
+            DAILY INTELLIGENCE
+          </h1>
+          <p class="text-[11px] font-serif italic text-ink-500 pt-0.5">Verified Global & Vietnam Strategic Analysis</p>
+        </div>
+        
+        <div class="flex items-center space-x-1.5">
+          <!-- Search toggle -->
+          <button onclick="toggleSearch()" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </button>
+          <!-- Refresh -->
+          <button onclick="location.reload()" class="p-2 rounded-md bg-[#EFEAE0] border border-[#DDD6C8] text-ink-700 hover:text-ink-900 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          </button>
+        </div>
       </div>
-    </div>
-    
-    <div class="flex items-center space-x-2">
-      <!-- Search toggle -->
-      <button onclick="toggleSearch()" class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-      </button>
-      <!-- Quick Refresh -->
-      <button onclick="location.reload()" class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-      </button>
     </div>
   </header>
 
   <!-- Search input bar (hidden by default) -->
-  <div id="searchBar" class="hidden px-4 py-2.5 bg-slate-900/90 border-b border-slate-800">
-    <input type="text" id="searchInput" oninput="filterNews()" placeholder="Filter by keyword (e.g. Fed, GDP, SBV, Nobel)..." 
-           class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+  <div id="searchBar" class="hidden max-w-2xl mx-auto px-4 py-2.5 bg-[#EFEAE0] border-b border-[#DDD6C8]">
+    <input type="text" id="searchInput" oninput="filterNews()" placeholder="Filter by keyword (e.g. GDP, SBV, Fed, Nobel)..." 
+           class="w-full bg-white border border-[#D6CFC3] rounded-md px-3 py-1.5 text-xs text-ink-900 placeholder-ink-400 focus:outline-none focus:border-oxblood">
   </div>
 
   <main class="max-w-2xl mx-auto px-4 pt-4 space-y-5">
     
-    <!-- Global Posture Card -->
-    <div class="p-4 rounded-xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800/80 shadow-sm relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none"></div>
+    <!-- Executive Posture (Editor's Dispatch) -->
+    <div class="p-4 rounded-lg bg-[#FAF7F0] border border-[#E2DBD0] shadow-sm relative">
       <div class="flex items-center space-x-2 mb-1.5">
-        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="text-[11px] font-semibold uppercase tracking-wider text-emerald-400">Executive Posture</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-oxblood"></span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-oxblood">Executive Posture</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed font-normal">
-        {data.get("global_posture", "Calibrated intelligence monitoring active.")}
+      <p class="text-xs sm:text-sm font-serif text-ink-800 leading-relaxed italic">
+        "{data.get("global_posture", "Calibrated intelligence monitoring active.")}"
       </p>
     </div>
 
-    <!-- Category Nav Tabs -->
-    <div class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
-      <button onclick="setTab('all')" id="tab-all" class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-emerald-500 text-white whitespace-nowrap shadow-sm transition">
+    <!-- Category Tabs (Paper Pressed Pills) -->
+    <div class="flex space-x-1.5 overflow-x-auto no-scrollbar py-1">
+      <button onclick="setTab('all')" id="tab-all" class="px-3.5 py-1.5 rounded-md text-xs font-semibold bg-ink-900 text-paper-50 whitespace-nowrap shadow-sm transition">
         All Feed
       </button>
-      <button onclick="setTab('vietnam')" id="tab-vietnam" class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition">
+      <button onclick="setTab('vietnam')" id="tab-vietnam" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
         🇻🇳 Việt Nam
       </button>
-      <button onclick="setTab('global')" id="tab-global" class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition">
+      <button onclick="setTab('global')" id="tab-global" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
         🌐 Global Macro
       </button>
-      <button onclick="setTab('science')" id="tab-science" class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition">
+      <button onclick="setTab('science')" id="tab-science" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
         🔬 Science & Med
       </button>
-      <button onclick="setTab('radar')" id="tab-radar" class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition">
+      <button onclick="setTab('radar')" id="tab-radar" class="px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition">
         ⚡ Radar Skim
       </button>
     </div>
 
     <!-- Executive Radar Top 3 -->
-    <section id="radarSection" class="space-y-2.5">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+    <section id="radarSection" class="space-y-2">
+      <div class="flex items-center justify-between border-b border-[#E5DFD3] pb-1">
+        <h2 class="text-[11px] font-bold uppercase tracking-wider text-ink-700 flex items-center space-x-1.5">
           <span>⚡ Top Impact Radar</span>
         </h2>
+        <span class="text-[10px] text-ink-400 font-serif italic">Curated by weighted severity</span>
       </div>
       <div id="radarCards" class="grid gap-2">
         <!-- Injected via JS -->
@@ -282,12 +352,12 @@ def generate_html(data, out_path):
 
     <!-- Main Articles Stream -->
     <section class="space-y-3 pt-2">
-      <div class="flex items-center justify-between">
-        <h2 id="streamTitle" class="text-xs font-bold uppercase tracking-wider text-slate-400">
+      <div class="flex items-center justify-between border-b border-[#E5DFD3] pb-1">
+        <h2 id="streamTitle" class="text-[11px] font-bold uppercase tracking-wider text-ink-700">
           In-Depth Strategic Intelligence
         </h2>
       </div>
-      <div id="articlesContainer" class="space-y-3.5">
+      <div id="articlesContainer" class="space-y-4">
         <!-- Injected via JS -->
       </div>
     </section>
@@ -295,20 +365,20 @@ def generate_html(data, out_path):
   </main>
 
   <!-- Bottom Navigation Bar for Mobile -->
-  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-lg border-t border-slate-800/80 px-6 py-2.5 flex items-center justify-around max-w-2xl mx-auto">
-    <button onclick="setTab('all')" class="flex flex-col items-center space-y-1 text-emerald-400">
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#F8F5EE]/95 backdrop-blur-md border-t border-[#E5DFD3] px-6 py-2.5 flex items-center justify-around max-w-2xl mx-auto shadow-sm">
+    <button onclick="setTab('all')" class="flex flex-col items-center space-y-1 text-oxblood">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-      <span class="text-[10px] font-medium">Briefing</span>
+      <span class="text-[10px] font-semibold">Front Page</span>
     </button>
-    <button onclick="setTab('vietnam')" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200">
+    <button onclick="setTab('vietnam')" class="flex flex-col items-center space-y-1 text-ink-500 hover:text-ink-800">
       <span class="text-base leading-none">🇻🇳</span>
       <span class="text-[10px] font-medium">Việt Nam</span>
     </button>
-    <button onclick="setTab('global')" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200">
+    <button onclick="setTab('global')" class="flex flex-col items-center space-y-1 text-ink-500 hover:text-ink-800">
       <span class="text-base leading-none">🌐</span>
       <span class="text-[10px] font-medium">Global</span>
     </button>
-    <button onclick="shareBrief()" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200">
+    <button onclick="shareBrief()" class="flex flex-col items-center space-y-1 text-ink-500 hover:text-ink-800">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
       <span class="text-[10px] font-medium">Share</span>
     </button>
@@ -318,10 +388,10 @@ def generate_html(data, out_path):
     const briefData = {json_str};
     let currentTab = 'all';
 
-    function getBadgeClass(score) {{
-      if (score >= 8.5) return 'badge-tier-1';
-      if (score >= 7.0) return 'badge-tier-2';
-      return 'badge-tier-3';
+    function getStampClass(score) {{
+      if (score >= 8.5) return 'stamp-tier-1';
+      if (score >= 7.0) return 'stamp-tier-2';
+      return 'stamp-tier-3';
     }}
 
     function renderRadar() {{
@@ -329,13 +399,13 @@ def generate_html(data, out_path):
       container.innerHTML = '';
       (briefData.executive_radar || []).forEach(item => {{
         const el = document.createElement('div');
-        el.className = 'p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-start justify-between space-x-3';
+        el.className = 'p-3 rounded-lg paper-card flex items-start justify-between space-x-3 transition hover:border-[#D6CFC3]';
         el.innerHTML = `
           <div class="space-y-1">
-            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">${{item.category}}</span>
-            <p class="text-xs font-medium text-slate-200 leading-snug">${{item.title}}</p>
+            <span class="text-[9px] font-bold text-ink-500 uppercase tracking-widest">${{item.category}}</span>
+            <p class="text-xs font-serif font-semibold text-ink-900 leading-snug">${{item.title}}</p>
           </div>
-          <span class="px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${{getBadgeClass(item.score)}}">
+          <span class="px-2 py-0.5 rounded text-[11px] font-bold shrink-0 ${{getStampClass(item.score)}}">
             ${{item.score.toFixed(1)}}
           </span>
         `;
@@ -366,67 +436,67 @@ def generate_html(data, out_path):
 
       if (items.length === 0) {{
         container.innerHTML = `
-          <div class="text-center py-8 text-xs text-slate-500">
+          <div class="text-center py-8 text-xs font-serif italic text-ink-400">
             No developments matching current filter.
           </div>
         `;
         return;
       }}
 
-      items.forEach((art, idx) => {{
+      items.forEach((art) => {{
         const card = document.createElement('article');
-        card.className = 'rounded-xl bg-slate-900 border border-slate-800/90 overflow-hidden shadow-sm transition hover:border-slate-700';
+        card.className = 'rounded-lg paper-card overflow-hidden transition hover:border-[#D0C8BB]';
 
-        const categoryTag = art.section === 'vietnam' ? '🇻🇳 Việt Nam' : (art.section === 'global' ? '🌐 Global' : '🔬 Science & Med');
+        const categoryTag = art.section === 'vietnam' ? '🇻🇳 Việt Nam' : (art.section === 'global' ? '🌐 Global Macro' : '🔬 Science & Medicine');
         
         const factsHtml = (art.facts || []).map(f => `
-          <li class="flex items-start space-x-2 text-xs text-slate-300">
-            <span class="text-emerald-400 shrink-0 font-bold">•</span>
+          <li class="flex items-start space-x-2 text-xs text-ink-800">
+            <span class="text-ink-400 shrink-0 font-bold">•</span>
             <span class="leading-relaxed">${{f}}</span>
           </li>
         `).join('');
 
         card.innerHTML = `
           <!-- Card Header -->
-          <div class="p-4 space-y-2 border-b border-slate-800/60">
+          <div class="p-4 space-y-1.5 border-b border-[#F0EBE1]">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">${{categoryTag}}</span>
+              <span class="text-[10px] font-bold text-ink-500 uppercase tracking-widest">${{categoryTag}}</span>
               <div class="flex items-center space-x-1.5">
-                <span class="text-[10px] text-slate-400 font-medium">Impact</span>
-                <span class="px-2 py-0.5 rounded text-xs font-bold ${{getBadgeClass(art.score)}}">
+                <span class="text-[9px] text-ink-400 uppercase font-semibold">Impact</span>
+                <span class="px-2 py-0.5 rounded text-[11px] font-bold ${{getStampClass(art.score)}}">
                   ${{art.score.toFixed(1)}}
                 </span>
               </div>
             </div>
-            <h3 class="text-sm font-semibold text-white leading-snug">${{art.title}}</h3>
-            ${{art.sources ? `<p class="text-[10px] text-slate-400 italic">Sources: ${{art.sources}}</p>` : ''}}
+            <h3 class="text-base font-bold font-serif-headline text-ink-900 leading-snug pt-0.5">${{art.title}}</h3>
+            ${{art.sources ? `<p class="text-[10px] text-ink-500 font-serif italic">Sources: ${{art.sources}}</p>` : ''}}
           </div>
 
           <!-- Card Body: Facts & So What -->
-          <div class="p-4 space-y-3.5 bg-slate-950/40">
+          <div class="p-4 space-y-3.5 bg-[#FCFAF6]">
             <!-- Facts list -->
             <div>
-              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Sự Kiện Cốt Lõi / The Facts</span>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-ink-600 block mb-1.5">Sự Kiện Cốt Lõi / The Facts</span>
               <ul class="space-y-1.5">
                 ${{factsHtml}}
               </ul>
             </div>
 
-            <!-- The So What -->
+            <!-- The So What (Analyst Ledger Box) -->
             ${{art.so_what ? `
-              <div class="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 space-y-1">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center space-x-1">
+              <div class="p-3.5 rounded-md bg-[#F4EFE6] border-l-[3px] border-oxblood space-y-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-oxblood flex items-center space-x-1">
                   <span>🎯 Phân Tích Hệ Quả / The "So What?"</span>
                 </span>
-                <p class="text-xs text-slate-300 leading-relaxed font-normal">${{art.so_what}}</p>
+                <p class="text-xs font-serif text-ink-800 leading-relaxed">${{art.so_what}}</p>
               </div>
             ` : ''}}
 
             <!-- Key Metric -->
             ${{art.metric ? `
-              <div class="flex items-center space-x-2 text-[11px] text-slate-400 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800/80">
-                <span class="text-emerald-400 font-bold shrink-0">📊 Chỉ số:</span>
-                <span class="font-medium text-slate-300 truncate">${{art.metric}}</span>
+              <div class="flex items-center space-x-2 text-[11px] text-ink-700 bg-white px-2.5 py-1.5 rounded border border-[#E5DFD3]">
+                <span class="text-oxblood font-bold shrink-0">📊 Chỉ số:</span>
+                <span class="font-medium text-ink-900 truncate">${{art.metric}}</span>
               </div>
             ` : ''}}
           </div>
@@ -442,9 +512,9 @@ def generate_html(data, out_path):
         const btn = document.getElementById('tab-' + t);
         if (!btn) return;
         if (t === tab) {{
-          btn.className = 'px-3.5 py-1.5 rounded-full text-xs font-medium bg-emerald-500 text-white whitespace-nowrap shadow-sm transition';
+          btn.className = 'px-3.5 py-1.5 rounded-md text-xs font-semibold bg-ink-900 text-paper-50 whitespace-nowrap shadow-sm transition';
         }} else {{
-          btn.className = 'px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900 border border-slate-800 text-slate-400 hover:text-white whitespace-nowrap transition';
+          btn.className = 'px-3.5 py-1.5 rounded-md text-xs font-medium bg-[#EFEBE1] border border-[#DDD7CB] text-ink-700 hover:text-ink-900 whitespace-nowrap transition';
         }}
       }});
 
