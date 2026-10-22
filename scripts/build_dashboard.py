@@ -140,11 +140,13 @@ def build():
         html_path = os.path.join(folder, "index.html")
         generate_html(data, html_path)
         
-        manifest_src = os.path.join(WEB_DIR, "manifest.json")
-        manifest_dst = os.path.join(folder, "manifest.json")
-        if os.path.exists(manifest_src) and manifest_src != manifest_dst:
-            with open(manifest_src, "r", encoding="utf-8") as rf:
-                with open(manifest_dst, "w", encoding="utf-8") as wf:
+    # Sync supporting files (manifest, sw, icons)
+    for asset in ["manifest.json", "sw.js", "icon-192.png", "icon-512.png"]:
+        src = os.path.join(WEB_DIR, asset)
+        dst = os.path.join(DOCS_DIR, asset)
+        if os.path.exists(src) and not os.path.exists(dst):
+            with open(src, "rb") as rf:
+                with open(dst, "wb") as wf:
                     wf.write(rf.read())
 
     print(f"Successfully generated dashboard at: {os.path.join(DOCS_DIR, 'index.html')}")
@@ -482,6 +484,13 @@ def generate_html(data, out_path):
     // Init
     renderRadar();
     renderArticles('all');
+
+    // Register Service Worker for PWA installability
+    if ('serviceWorker' in navigator) {{
+      window.addEventListener('load', () => {{
+        navigator.serviceWorker.register('./sw.js').catch(() => {{}});
+      }});
+    }}
   </script>
 </body>
 </html>
